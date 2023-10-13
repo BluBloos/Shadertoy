@@ -1,20 +1,18 @@
-// TODO: apparently this is incorrect (graded as incorrect). need to fix.
-
-float alternate_mandelbrot( in vec2 c )
+float julia( in vec2 z )
 {
-    vec2 z = vec2(0,0);
+//    vec2 z = ; // vec2(0,0);
+
+    vec2 c = vec2(cos(iTime), sin(iTime));
 
     int i;
     for (i = 0; i < 512; i++)
     {
-        float zy1 = exp(-z.y);
-        float zy2 = exp(z.y);
-        z = vec2( 0.5 * sin(z.x) * (zy1 - zy2),
-                  0.5 * -cos(z.x) * (zy1 + zy2) ); // iter.
+        z = vec2( z.x * z.x - z.y * z.y,
+                  2.0 * z.x * z.y ); // square.
         z += c;
         
         // check if divergent.
-        if ( (z.x > 10.0 || z.y > 10.0) )
+        if ( (z.x > 2.0 || z.y > 2.0) )
             break;
     }
     
@@ -27,7 +25,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
 {
     float aspect = 1280.0 / 720.0;
     
-    vec2 offset = vec2(cos(iTime), sin(iTime));
+    vec2 offset = vec2(0,0); //vec2(cos(iTime), sin(iTime));
 
     float scale = 4.0 / (1.0);
     float halfScale = scale / 2.0;
@@ -40,7 +38,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     
     xy -= offset;
                    
-    float m = alternate_mandelbrot(xy);
+    float m = julia(xy);
     
     vec3 col = vec3(0, 0, m);
 
